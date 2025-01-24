@@ -12,22 +12,17 @@
  *
  * https://refactoring.guru/es/design-patterns/builder
  */
-
-import { COLORS } from '../helpers/colors.ts';
-
 class Computer {
-  public cpu: string = 'cpu - not defined';
-  public ram: string = 'ram - not defined';
-  public storage: string = 'storage - not defined';
-  public gpu?: string;
+  public cpu: string = "cpu - not defined";
+  public ram: string = "ram - not defined";
+  public storage: string = "storage - not defined";
+  public gpu: string;
 
-  displayConfiguration() {
-    console.log(`Configuración de la computadora
-      CPU: ${this.cpu}  
-      RAM: ${this.ram}  
-      Almacenamiento: ${this.storage}  
-      GPU: ${this.gpu ?? 'No tiene GPU'}  
-      `);
+  displayConfiguration(): void {
+    console.log(`CPU: ${this.cpu}`);
+    console.log(`RAM: ${this.ram}`);
+    console.log(`Storage: ${this.storage}`);
+    console.log(`GPU: ${this.gpu}`);
   }
 }
 
@@ -64,23 +59,13 @@ class ComputerBuilder {
 }
 
 function main() {
-  const basicComputer: Computer = new ComputerBuilder()
-    .setCPU('Intel Core 2 Dúo')
-    .setRAM('4GB')
-    .setStorage('256GB')
-    .build();
-
-  console.log('%cComputadora básica:', COLORS.blue);
-  basicComputer.displayConfiguration();
-
   const gamingComputer = new ComputerBuilder()
-    .setCPU('Intel i9')
-    .setRAM('64GB')
-    .setStorage('1TB M2')
-    .setGPU('Nvidia RTX 5090')
+    .setCPU("Intel i9")
+    .setRAM("32GB")
+    .setStorage("1TB SSD")
+    .setGPU("RTX 3080")
     .build();
 
-  console.log('%c\nComputadora gamer\n', COLORS.cyan);
   gamingComputer.displayConfiguration();
 }
 

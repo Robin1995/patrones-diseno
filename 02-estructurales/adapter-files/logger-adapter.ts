@@ -1,32 +1,39 @@
-import { Logger } from 'jsr:@deno-library/logger';
+import { Logger } from "jsr:@deno-library/logger";
 
 // TODO: Implementar el LoggerAdapter
+const logger = new Logger();
 
 interface ILoggerAdapter {
   file: string;
-
-  writeLog: (msg: string) => void;
-  writeWarning: (msg: string) => void;
-  writeError: (msg: string) => void;
+  writeLog(message: string): void;
+  writeError(message: string): void;
+  writeWarn(message: string): void;
+  writeInfo(message: string): void;
 }
 
 export class DenoLoggerAdapter implements ILoggerAdapter {
-  public file: string;
-  private logger = new Logger();
-
-  constructor(file: string) {
-    this.file = file;
+  file: string;
+  constructor(private fileOrigin: string) {
+    this.file = fileOrigin;
   }
 
-  writeLog(msg: string) {
-    this.logger.info(`[${this.file} Log] ${msg}`);
+  writeLog(message: string) {
+    logger.info(`[${this.file} Log] ${message}`);
   }
 
-  writeWarning(msg: string) {
-    this.logger.warn(`[${this.file} warning] %c${msg}`);
+  writeError(message: string) {
+    logger.error(`[${this.file} Log] ${message}`);
   }
 
-  writeError(msg: string) {
-    this.logger.error(`[${this.file} error] %c${msg}`);
+  writeWarn(message: string) {
+    logger.warning(`[${this.file} Log] ${message}`);
+  }
+
+  writeInfo(message: string) {
+    logger.info(`[${this.file} Log] ${message}`);
   }
 }
+logger.info("Aplicación iniciada correctamente.");
+logger.warn("El uso de memoria está alto.");
+logger.error("Error al procesar la solicitud.");
+logger.info("Procesando pago de $100 con Stripe.");

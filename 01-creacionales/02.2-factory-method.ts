@@ -28,6 +28,7 @@ import { COLORS } from '../helpers/colors.ts';
 
 // 1. Definir la interfaz Report
 interface Report {
+  content: string;
   generate(): void;
 }
 
@@ -35,14 +36,16 @@ interface Report {
 // Implementar SalesReport e InventoryReport
 
 class SalesReport implements Report {
+  content: string;
   generate(): void {
-    console.log('%cGenerando reporte de ventas...', COLORS.green);
+    console.log('%cGenerando reporte de ventas...', COLORS.blue);
   }
 }
 
 class InventoryReport implements Report {
+  content: string;
   generate(): void {
-    console.log('%cGenerando reporte de inventario...', COLORS.orange);
+    console.log('%cGenerando reporte de inventario...', COLORS.green);
   }
 }
 
@@ -76,7 +79,9 @@ class InventoryReportFactory extends ReportFactory {
 function main() {
   let reportFactory: ReportFactory;
 
-  const reportType = prompt('¿Qué tipo de reporte deseas? (sales/inventory)');
+  const reportType = prompt(
+    '¿Qué tipo de reporte deseas? (sales/inventory)'
+  );
 
   if (reportType === 'sales') {
     reportFactory = new SalesReportFactory();

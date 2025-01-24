@@ -11,7 +11,7 @@
  * * que lo componen.
  */
 
-import { COLORS } from '../helpers/colors.ts';
+import { COLORS } from "../helpers/colors.ts";
 
 //! Tarea: crear un QueryBuilder para construir consultas SQL
 /**
@@ -59,8 +59,8 @@ class QueryBuilder {
     return this;
   }
 
-  orderBy(field: string, direction: 'ASC' | 'DESC' = 'ASC'): QueryBuilder {
-    this.orderFields.push(`order by ${field} ${direction}`);
+  orderBy(field: string, direction: "ASC" | "DESC" = "ASC"): QueryBuilder {
+    this.orderFields.push(`${field} ${direction}`);
     return this;
   }
 
@@ -70,36 +70,82 @@ class QueryBuilder {
   }
 
   execute(): string {
-    const fields = this.fields.length > 0 ? this.fields.join(', ') : '*';
+    // Select id, name, email from users where age > 18 and country = 'Cri' order by name ASC limit 10;
+    let query = `Select ${
+      this.fields.length ? this.fields.join(", ") : "*"
+    } from ${this.table}`;
+    if (this.conditions.length) {
+      query += ` where ${this.conditions.join(" and ")}`;
+    }
+    if (this.orderFields.length) {
+      query += ` order by ${this.orderFields.join(", ")}`;
+    }
+    if (this.limitCount) {
+      query += ` limit ${this.limitCount}`;
+    }
+    return query;
+  }
+}
 
-    const whereClause =
-      this.conditions.length > 0
-        ? `WHERE ${this.conditions.join(' AND ')}`
-        : ' ';
+class HTMLTemplate {
+  header: string;
+  body: string;
+  footer: string;
 
-    const orderByClause =
-      this.orderFields.length > 0
-        ? `ORDER BY ${this.orderFields.join(', ')}`
-        : '';
+  print(): string {
+    return `${this.header ?? ""}${this.body ?? ""}${this.footer ?? ""}`;
+  }
+}
 
-    const limitClause = this.limitCount ? `LIMIT ${this.limitCount}` : '';
+class HTMLTemplateBuilder {
+  private template: HTMLTemplate = new HTMLTemplate();
 
-    return `Select ${fields} from ${this.table} ${whereClause} ${orderByClause} ${limitClause}`;
+  setHeader(header: string): HTMLTemplateBuilder {
+    this.template.header = header;
+    return this;
+  }
+
+  setBody(body: string): HTMLTemplateBuilder {
+    this.template.body = body;
+    return this;
+  }
+
+  setFooter(footer: string): HTMLTemplateBuilder {
+    this.template.footer = footer;
+    return this;
+  }
+
+  build(): HTMLTemplate {
+    return this.template;
   }
 }
 
 function main() {
-  const usersQuery = new QueryBuilder('users')
-    .select('id', 'name', 'email')
-    .where('age > 20')
-    // .where("country = 'CHI'") // Esto debe de hacer una condición AND
-    .orderBy('name', 'ASC')
-    .orderBy('age', 'DESC')
-    .limit(100)
+  const usersQuery = new QueryBuilder("users")
+    .select("id", "name", "email")
+    .where("age > 18")
+    .where("country = 'Cri'") // Esto debe de hacer una condición AND
+    .orderBy("name", "ASC")
+    .limit(10)
     .execute();
 
-  console.log('%cConsulta:\n', COLORS.red);
+  console.log("%cConsulta:\n", COLORS.red);
   console.log(usersQuery);
+
+  const econsentTemplate = new HTMLTemplateBuilder()
+    .setHeader("<header>Welcome to the eConsent application</header>\n")
+    .setBody("  <body>Body</body>\n")
+    .setFooter("<footer>Footer</footer>")
+    .build();
+  console.log("%cTemplate:\n", COLORS.blue);
+  console.log(econsentTemplate.print());
+
+  const surveysTemplate = new HTMLTemplateBuilder()
+    .setHeader("<header>Welcome to the surveys application</header>\n")
+    .setFooter("<footer>Footer</footer>")
+    .build();
+  console.log("%cTemplate:\n", COLORS.green);
+  console.log(surveysTemplate.print());
 }
 
 main();
