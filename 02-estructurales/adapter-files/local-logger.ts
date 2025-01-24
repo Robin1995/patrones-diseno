@@ -1,17 +1,21 @@
-import { COLORS } from '../../helpers/colors.ts';
+import { COLORS } from "../../helpers/colors.ts";
 
+// TODO: Implementar el LocalLogger Class
 export class LocalLogger {
   constructor(private file: string) {}
-
-  writeLog(msg: string): void {
-    console.log(`[${this.file} Log] ${msg}`);
+  writeLog(message: string) {
+    console.log(`[${this.file} Log] %c${message}`, COLORS.green);
   }
 
-  writeError(msg: string): void {
-    console.log(`[${this.file} error] %c${msg}`, COLORS.red);
+  writeError(message: string) {
+    console.log(`[${this.file} Log] %c${message}`, COLORS.red);
   }
 
-  writeWarning(msg: string): void {
-    console.log(`[${this.file} warning] %c${msg}`, COLORS.yellow);
+  writeWarn(message: string) {
+    console.log(`[${this.file} Log] %c${message}`, COLORS.yellow);
+  }
+
+  writeInfo(message: string) {
+    console.log(`[${this.file} Log] %c${message}`, COLORS.blue);
   }
 }

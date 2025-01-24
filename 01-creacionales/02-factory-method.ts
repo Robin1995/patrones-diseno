@@ -12,83 +12,104 @@
  * https://refactoring.guru/es/design-patterns/factory-method
  *
  */
-
-import { COLORS } from '../helpers/colors.ts';
-
-interface Hamburger {
+interface Burger {
+  ingredients: string;
+  price: number;
   prepare(): void;
 }
 
-class ChickenHamburger implements Hamburger {
+class CheeseBurger implements Burger {
+  ingredients = "Cheese, bread";
+  price = 10;
+
+  constructor(toppings: string[]) {
+    this.ingredients += `, ${toppings.join(", ")}`;
+  }
+
   prepare(): void {
-    console.log('Preparando una hamburguesa de %cpollo', COLORS.yellow);
+    console.log("Preparing Cheese Burger with ", this.ingredients);
   }
 }
 
-class BeefHamburger implements Hamburger {
+class ChickenBurger implements Burger {
+  ingredients: string = "Chicken, bread";
+  price: 15;
+  constructor(toppings: string[]) {
+    this.ingredients += `, ${toppings.join(", ")}`;
+  }
   prepare(): void {
-    console.log('Preparando una hamburguesa de %cres', COLORS.brown);
+    console.log("Preparing Chicken Burger with ", this.ingredients);
   }
 }
 
-class BeanHamburger implements Hamburger {
+class BeefBurger implements Burger {
+  ingredients: "Beef, bread";
+  price: number = 25;
+  constructor(toppings: string[]) {
+    this.ingredients += `, ${toppings.join(", ")}`;
+  }
   prepare(): void {
-    console.log('Preparando una hamburguesa de %cfrijol', COLORS.orange);
+    console.log("Preparing Beef Burger with ", this.ingredients);
   }
 }
 
 abstract class Restaurant {
-  protected abstract createHamburger(): Hamburger;
+  abstract toppings: string[];
+  abstract createBurger(selectedToppings: string[]): Burger;
 
-  orderHamburger(): void {
-    const hamburger = this.createHamburger();
-    hamburger.prepare();
+  orderBurger(selectedToppings: string[]): void {
+    const burguer = this.createBurger(selectedToppings);
+    burguer.prepare();
+  }
+}
+
+class CheeseRestaurant extends Restaurant {
+  override toppings: string[] = ["tomato", "tartara sauce"];
+  override createBurger(selectedToppings: string[]): Burger {
+    return new CheeseBurger(selectedToppings);
   }
 }
 
 class ChickenRestaurant extends Restaurant {
-  override createHamburger(): Hamburger {
-    return new ChickenHamburger();
+  override toppings: string[] = ["tomato", "coco sauce"];
+  override createBurger(selectedToppings: string[]): Burger {
+    return new ChickenBurger(selectedToppings);
   }
 }
 
 class BeefRestaurant extends Restaurant {
-  override createHamburger(): Hamburger {
-    return new BeefHamburger();
-  }
-}
-
-class BeanRestaurant extends Restaurant {
-  override createHamburger(): Hamburger {
-    return new BeanHamburger();
+  override toppings: string[] = ["tomato", "bbq sauce"];
+  override createBurger(selectedToppings: string[]): Burger {
+    return new BeefBurger(selectedToppings);
   }
 }
 
 function main() {
   let restaurant: Restaurant;
 
-  const burgerType = prompt(
-    '¿Qué tipo de hamburguesa quieres? ( chicken/beef/bean )'
-  );
+  const burgerType = prompt("What burger do you want? (cheese/chicken/beef)");
 
   switch (burgerType) {
-    case 'chicken':
+    case "cheese":
+      restaurant = new CheeseRestaurant();
+      break;
+    case "chicken":
       restaurant = new ChickenRestaurant();
       break;
-
-    case 'beef':
+    case "beef":
       restaurant = new BeefRestaurant();
       break;
-
-    case 'bean':
-      restaurant = new BeanRestaurant();
-      break;
-
     default:
-      throw new Error('Opción no válida');
+      console.log("Invalid burger type");
+      return;
   }
-
-  restaurant.orderHamburger();
+  const selectedToppings = prompt(
+    `What toppings do you want to add?, we offer: ${restaurant.toppings.join(
+      ", "
+    )}`
+  );
+  const toppings = selectedToppings?.split(",") ?? [];
+  restaurant.orderBurger(toppings);
 }
 
 main();
